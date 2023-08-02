@@ -12,25 +12,22 @@ module.exports = (secret) => (req, resp, next) => {
   if (type.toLowerCase() !== 'bearer') {
     return next();
   }
-
   jwt.verify(token, secret, (err, decodedToken) => {
     if (err) {
       return next(403);
     }
-
-    // TODO: Verificar identidad del usuario usando `decodeToken.uid`
+    req.user = decodedToken;
+    next();
   });
 };
 
-module.exports.isAuthenticated = (req) => (
-  // TODO: decidir por la informacion del request si la usuaria esta autenticada
-  false
-);
+module.exports.isAuthenticated = (req) => {
+  return !!req.user;
+};
 
-module.exports.isAdmin = (req) => (
-  // TODO: decidir por la informacion del request si la usuaria es admin
-  false
-);
+module.exports.isAdmin = (req) => {
+  return req.user && req.user.admin === true;
+};
 
 module.exports.requireAuth = (req, resp, next) => (
   (!module.exports.isAuthenticated(req))
