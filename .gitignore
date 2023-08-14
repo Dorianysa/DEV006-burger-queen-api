@@ -1,4 +1,7 @@
 node_modules/
 secrets.env
 docs
+node_modules/
+secrets.env
+docs
 .env
